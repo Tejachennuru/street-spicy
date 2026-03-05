@@ -1,0 +1,180 @@
+/* css/styles.css */
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap');
+
+:root {
+  --primary: #ef4444; /* red-500 */
+  --primary-dark: #dc2626; /* red-600 */
+  --secondary: #f97316; /* orange-500 */
+  --accent: #facc15; /* yellow-400 */
+  --dark-bg: #111827; /* gray-900 */
+  --card-bg: #1f2937; /* gray-800 */
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Outfit', sans-serif;
+  background-color: var(--dark-bg);
+  color: #fff;
+  overflow-x: hidden;
+}
+
+h1, h2, h3, .heading-font {
+  font-family: 'Playfair Display', serif;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--dark-bg);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--primary);
+  border-radius: 4px;
+}
+
+/* Hide scrollbar for horizontal scrolling containers */
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.fade-in {
+  animation: fadeIn 0.6s ease-out forwards;
+}
+
+@keyframes pulse-subtle {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+.pulse-hover:hover {
+  animation: pulse-subtle 1s infinite;
+}
+
+/* Hero Section specific styles */
+.hero-gradient {
+  background: linear-gradient(to bottom, rgba(17, 24, 39, 0.5) 0%, rgba(17, 24, 39, 0.95) 100%);
+}
+
+.bg-hero-image {
+  background-image: url('https://images.unsplash.com/photo-1555939594-58d7cb561ad1?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+}
+
+/* Food Card Hover Effect */
+.food-card {
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  background: var(--card-bg);
+  border: 1px solid rgba(255,255,255,0.05);
+}
+
+.food-card:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 20px 25px -5px rgba(239, 68, 68, 0.2), 0 10px 10px -5px rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.food-card .card-img-wrap {
+  overflow: hidden;
+}
+
+.food-card:hover .card-img {
+  transform: scale(1.1);
+}
+
+.card-img {
+  transition: transform 0.6s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+/* Veg / Non-Veg Icons */
+.veg-icon {
+  width: 16px;
+  height: 16px;
+  border: 2px solid #22c55e;
+  border-radius: 4px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px;
+}
+.veg-icon::after {
+  content: '';
+  width: 8px;
+  height: 8px;
+  background-color: #22c55e;
+  border-radius: 50%;
+}
+
+.nonveg-icon {
+  width: 16px;
+  height: 16px;
+  border: 2px solid #ef4444;
+  border-radius: 4px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px;
+}
+.nonveg-icon::after {
+  content: '';
+  width: 8px;
+  height: 8px;
+  background-color: #ef4444;
+  border-radius: 50%;
+}
+
+/* Custom Toggle Switch for Veg Only (React component approach handles styling but doing it manually in vanilla) */
+.toggle-checkbox:checked {
+  right: 0;
+  border-color: #22c55e;
+}
+.toggle-checkbox:checked + .toggle-label {
+  background-color: #22c55e;
+}
+.toggle-checkbox {
+  right: 0;
+  z-index: 1;
+  border-color: #4b5563;
+  transition: all 0.3s;
+}
+.toggle-label {
+  width: 3rem;
+  height: 1.5rem;
+  background-color: #4b5563;
+  border-radius: 9999px;
+  transition: all 0.3s;
+}
+
+/* Cart Overlay Transition */
+#cart-overlay {
+  transition: opacity 0.3s ease;
+}
+
+#cart-drawer {
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Glassmorphism utility */
+.glass {
+  background: rgba(31, 41, 55, 0.7);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}

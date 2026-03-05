@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Street & Spicy - Ultimate Street Food</title>
+    <meta name="description"
+        content="Experience the ultimate street food with The Street & Spicy. Order your favorite spicy dishes fast and fresh.">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#fef2f2',
+                            100: '#fee2e2',
+                            500: '#ef4444',
+                            600: '#dc2626',
+                            800: '#991b1b',
+                            900: '#7f1d1d',
+                            yellow: '#facc15',
+                            orange: '#f97316'
+                        },
+                        dark: {
+                            800: '#1f2937',
+                            900: '#111827',
+                            950: '#030712'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Outfit', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/styles.css">
+    <!-- Phosphor Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+</head>
+
+<body
+    class="bg-dark-900 text-white font-sans antialiased overflow-x-hidden selection:bg-brand-500 selection:text-white">
+
+    <!-- Navigation -->
+    <nav class="fixed w-full z-50 transition-all duration-300 glass border-b border-white/5 py-4" id="navbar">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-12">
+                <!-- Logo -->
+                <div class="flex-shrink-0 flex items-center cursor-pointer" onclick="window.scrollTo(0,0)">
+                    <div class="flex items-center gap-2">
+                        <i class="ph-fill ph-fire text-3xl text-brand-500 animate-pulse"></i>
+                        <span class="font-serif font-bold text-xl md:text-2xl tracking-tight text-white block">
+                            THE STREET <span class="text-brand-500">&</span> SPICY
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Desktop Search -->
+                <div class="hidden md:block flex-1 max-w-lg mx-8">
+                    <div class="relative group">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i
+                                class="ph ph-magnifying-glass text-gray-400 group-focus-within:text-brand-500 transition-colors"></i>
+                        </div>
+                        <input type="text" id="desktop-search"
+                            class="block w-full pl-10 pr-3 py-2 border border-gray-700 rounded-full leading-5 bg-dark-800/50 text-gray-300 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-brand-500 focus:border-brand-500 focus:bg-dark-800 transition-all sm:text-sm"
+                            placeholder="Search for chicken, pizza, biryani...">
+                    </div>
+                </div>
+
+                <!-- Cart Button & Mobile Menu Toggle -->
+                <div class="flex items-center gap-4">
+                    <button id="cart-btn" class="relative p-2 rounded-full hover:bg-dark-800 transition-colors group">
+                        <i class="ph ph-shopping-cart text-2xl group-hover:text-brand-500 transition-colors"></i>
+                        <span id="cart-badge"
+                            class="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white transform translate-x-1/4 -translate-y-1/4 bg-brand-500 rounded-full scale-0 transition-transform duration-300">0</span>
+                    </button>
+                    <!-- Mobile Search Toggle -->
+                    <button id="mobile-search-btn"
+                        class="md:hidden p-2 rounded-full hover:bg-dark-800 transition-colors">
+                        <i class="ph ph-magnifying-glass text-2xl"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Mobile Search Bar (Hidden by default) -->
+            <div id="mobile-search-container" class="hidden md:hidden mt-3 pb-2 fade-in">
+                <div class="relative">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <i class="ph ph-magnifying-glass text-gray-400"></i>
+                    </div>
+                    <input type="text" id="mobile-search"
+                        class="block w-full pl-10 pr-3 py-3 border border-gray-700 rounded-lg leading-5 bg-dark-800 text-gray-300 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-brand-500 focus:border-brand-500 sm:text-sm"
+                        placeholder="Search dishes...">
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="relative bg-hero-image min-h-[90vh] flex items-center justify-center">
+        <!-- Overlay -->
+        <div class="absolute inset-0 hero-gradient"></div>
+
+        <div class="relative z-10 text-center px-4 max-w-5xl mx-auto mt-28 md:mt-16">
+            <span
+                class="inline-block py-1 px-3 rounded-full bg-brand-500/20 text-brand-500 font-medium text-sm mb-6 border border-brand-500/30 backdrop-blur-sm fade-in"
+                style="animation-delay: 0.1s">🔥 Now Open For Order</span>
+            <h1 class="font-serif text-5xl md:text-7xl lg:text-8xl font-bold text-white mb-6 leading-tight fade-in"
+                style="animation-delay: 0.2s">
+                THE STREET <br class="md:hidden" /> <span
+                    class="text-transparent bg-clip-text bg-gradient-to-r from-brand-500 to-brand-orange">& SPICY</span>
+            </h1>
+            <p class="mt-4 text-xl md:text-2xl text-gray-300 font-light mb-10 max-w-2xl mx-auto fade-in"
+                style="animation-delay: 0.3s">
+                The Ultimate Street Food Experience. Premium quality, mind-blowing flavors, delivered piping hot to your
+                door.
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center items-center fade-in"
+                style="animation-delay: 0.4s">
+                <button onclick="document.getElementById('menu-section').scrollIntoView()"
+                    class="w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-brand-500 to-brand-orange text-white rounded-full font-bold text-lg hover:shadow-[0_0_20px_rgba(239,68,68,0.4)] transition-all duration-300 transform hover:-translate-y-1">
+                    Order Now
+                </button>
+                <button onclick="document.getElementById('menu-section').scrollIntoView()"
+                    class="w-full sm:w-auto px-8 py-4 bg-transparent border-2 border-white/20 text-white rounded-full font-bold text-lg hover:bg-white/10 transition-all duration-300 backdrop-blur-sm">
+                    Explore Menu
+                </button>
+            </div>
+
+            <!-- Quick stats -->
+            <div class="mt-16 grid grid-cols-2 md:grid-cols-4 gap-4 max-w-3xl mx-auto border-t border-white/10 pt-8 fade-in"
+                style="animation-delay: 0.6s">
+                <div class="text-center">
+                    <div class="font-serif text-3xl text-brand-yellow font-bold">4.8★</div>
+                    <div class="text-sm text-gray-400">Zomato Rating</div>
+                </div>
+                <div class="text-center">
+                    <div class="font-serif text-3xl text-white font-bold">2000+</div>
+                    <div class="text-sm text-gray-400">Happy Foodies</div>
+                </div>
+                <div class="text-center">
+                    <div class="font-serif text-3xl text-white font-bold"><i class="ph ph-clock text-brand-orange"></i>
+                    </div>
+                    <div class="text-sm text-gray-400">Fast Delivery</div>
+                </div>
+                <div class="text-center">
+                    <div class="font-serif text-3xl text-white font-bold"><i class="ph ph-leaf text-green-500"></i>
+                    </div>
+                    <div class="text-sm text-gray-400">Fresh Ingredients</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Scroll indicator -->
+        <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
+            <i class="ph ph-caret-down text-3xl text-white/50"></i>
+        </div>
+    </header>
+
+    <!-- Categories Filters -->
+    <section class="py-6 border-b border-white/5 sticky top-16 md:top-20 z-40 bg-dark-900/95 backdrop-blur-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center gap-3 overflow-x-auto hide-scrollbar pb-2 pt-1" id="category-filters">
+                <!-- Categories rendered by JS -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Menu Section -->
+    <section id="menu-section" class="py-20 relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-12 gap-6">
+                <div>
+                    <h2 class="font-serif text-4xl md:text-5xl font-bold mb-3"><span
+                            class="text-brand-500">Popular</span> Dishes</h2>
+                    <p class="text-gray-400">Explore our mouth-watering menu, carefully crafted to satisfy cravings.</p>
+                </div>
+
+                <!-- Veg / Non-Veg Toggle -->
+                <div class="flex items-center bg-dark-800 p-2 rounded-xl border border-white/5 shadow-inner">
+                    <span class="text-sm font-medium mr-3 text-gray-300" id="filter-all-text">All Items</span>
+                    <label for="veg-toggle" class="flex items-center cursor-pointer">
+                        <div class="relative">
+                            <input type="checkbox" id="veg-toggle" class="sr-only">
+                            <div class="block bg-gray-600 w-14 h-8 rounded-full transition-colors duration-300"
+                                id="toggle-bg"></div>
+                            <div
+                                class="dot absolute left-1 top-1 bg-white w-6 h-6 rounded-full transition transform duration-300 flex items-center justify-center">
+                                <span class="w-2 h-2 rounded-full" id="toggle-indicator-color"></span>
+                            </div>
+                        </div>
+                    </label>
+                    <span class="text-sm font-medium ml-3 text-gray-500" id="filter-veg-text">Veg Only <span
+                            class="text-green-500 ml-1">●</span></span>
+                </div>
+            </div>
+
+            <!-- Empty State / No Results -->
+            <div id="no-results" class="hidden text-center py-20">
+                <i class="ph ph-magnifying-glass text-6xl text-gray-600 mb-4"></i>
+                <h3 class="text-2xl font-serif text-white mb-2">No dishes found</h3>
+                <p class="text-gray-400">Try searching for something else or clear the filters.</p>
+                <button id="clear-filters-btn"
+                    class="mt-6 px-6 py-2 bg-dark-800 hover:bg-dark-700 rounded-lg text-brand-500 font-medium transition-colors">Clear
+                    All Filters</button>
+            </div>
+
+            <!-- Food Grid -->
+            <div id="food-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+                <!-- Food Cards Rendered via JS -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Trust & Persuasion Section -->
+    <section class="py-24 bg-dark-800 relative overflow-hidden">
+        <!-- Abstract shape -->
+        <div
+            class="absolute -top-40 -right-40 w-96 h-96 bg-brand-500 rounded-full mix-blend-multiply filter blur-3xl opacity-10">
+        </div>
+        <div
+            class="absolute -bottom-40 -left-40 w-96 h-96 bg-brand-orange rounded-full mix-blend-multiply filter blur-3xl opacity-10">
+        </div>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="text-center mb-16">
+                <h2 class="font-serif text-4xl md:text-5xl font-bold mb-4">Why Foodies <span class="text-brand-500">Love
+                        Us</span></h2>
+                <div class="w-24 h-1 bg-brand-500 mx-auto rounded-full"></div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+                <div
+                    class="bg-dark-900 border border-white/5 p-8 rounded-2xl text-center transform transition duration-300 hover:-translate-y-2 hover:border-brand-500/30">
+                    <div
+                        class="w-16 h-16 bg-brand-500/10 text-brand-500 rounded-full flex items-center justify-center mx-auto mb-6 text-3xl">
+                        <i class="ph-fill ph-fire"></i>
+                    </div>
+                    <h3 class="font-serif text-2xl font-bold mb-3">Fresh Street Style</h3>
+                    <p class="text-gray-400">Authentic recipes tossed in high heat woks and tandoors for that smoky,
+                        unbeatable flavor.</p>
+                </div>
+
+                <div
+                    class="bg-dark-900 border border-white/5 p-8 rounded-2xl text-center transform transition duration-300 hover:-translate-y-2 hover:border-brand-500/30">
+                    <div
+                        class="w-16 h-16 bg-brand-500/10 text-brand-500 rounded-full flex items-center justify-center mx-auto mb-6 text-3xl">
+                        <i class="ph-fill ph-moped"></i>
+                    </div>
+                    <h3 class="font-serif text-2xl font-bold mb-3">Lightning Delivery</h3>
+                    <p class="text-gray-400">Hot food to your doorsteps in record time. Because cravings can't wait.</p>
+                </div>
+
+                <div
+                    class="bg-dark-900 border border-white/5 p-8 rounded-2xl text-center transform transition duration-300 hover:-translate-y-2 hover:border-brand-500/30">
+                    <div
+                        class="w-16 h-16 bg-brand-500/10 text-brand-500 rounded-full flex items-center justify-center mx-auto mb-6 text-3xl">
+                        <i class="ph-fill ph-users-three"></i>
+                    </div>
+                    <h3 class="font-serif text-2xl font-bold mb-3">Bulk Orders</h3>
+                    <p class="text-gray-400">Hosting a party? We undertake all party orders to make your events
+                        delicious.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-dark-950 pt-20 pb-10 border-t border-white/5 relative z-10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
+                <!-- Branding -->
+                <div>
+                    <div class="flex items-center gap-2 mb-6">
+                        <i class="ph-fill ph-fire text-3xl text-brand-500"></i>
+                        <span class="font-serif font-bold text-2xl text-white">THE STREET & SPICY</span>
+                    </div>
+                    <p class="text-gray-400 mb-6 font-serif italic">"Where the taste & Spicy Matters"</p>
+                    <p class="text-gray-400 text-sm">Welcome to our Mini Cafe. Every bite is a Spicy...!!!</p>
+
+                    <div class="flex items-center gap-4 mt-6">
+                        <a href="#"
+                            class="w-10 h-10 rounded-full bg-dark-800 flex items-center justify-center text-gray-400 hover:bg-brand-500 hover:text-white transition-colors">
+                            <i class="ph-fill ph-instagram-logo text-xl"></i>
+                        </a>
+                        <a href="#"
+                            class="w-10 h-10 rounded-full bg-dark-800 flex items-center justify-center text-gray-400 hover:bg-brand-500 hover:text-white transition-colors">
+                            <i class="ph-fill ph-facebook-logo text-xl"></i>
+                        </a>
+                        <a href="#"
+                            class="w-10 h-10 rounded-full bg-dark-800 flex items-center justify-center text-gray-400 hover:bg-brand-500 hover:text-white transition-colors">
+                            <i class="ph-fill ph-whatsapp-logo text-xl"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Contact -->
+                <div>
+                    <h4 class="font-serif text-xl font-bold mb-6">Contact Us</h4>
+                    <ul class="space-y-4 text-gray-400">
+                        <li class="flex items-start gap-3">
+                            <i class="ph-fill ph-map-pin text-brand-500 mt-1"></i>
+                            <span>Hostels & Local<br>(Rudraram)</span>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <i class="ph-fill ph-phone text-brand-500"></i>
+                            <div class="flex flex-col">
+                                <a href="tel:9133272729" class="hover:text-brand-500 transition-colors">9133272729</a>
+                                <a href="tel:9951272729" class="hover:text-brand-500 transition-colors">9951272729</a>
+                            </div>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <i class="ph-fill ph-envelope-simple text-brand-500"></i>
+                            <a href="mailto:thestreetandspicyfoodstalls@gmail.com"
+                                class="hover:text-brand-500 transition-colors text-sm">thestreetandspicy...</a>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Information -->
+                <div>
+                    <h4 class="font-serif text-xl font-bold mb-6">Opening Hours</h4>
+                    <ul class="space-y-3 text-gray-400">
+                        <li class="flex justify-between border-b border-dark-800 pb-2">
+                            <span>Mon - Fri</span>
+                            <span class="text-white">12:00 PM - 11:30 PM</span>
+                        </li>
+                        <li class="flex justify-between border-b border-dark-800 pb-2">
+                            <span>Saturday</span>
+                            <span class="text-white">12:00 PM - 12:00 AM</span>
+                        </li>
+                        <li class="flex justify-between border-b border-dark-800 pb-2">
+                            <span>Sunday</span>
+                            <span class="text-white">1:00 PM - 12:00 AM</span>
+                        </li>
+                    </ul>
+                    <div
+                        class="mt-4 inline-flex items-center gap-2 bg-green-500/10 text-green-500 px-3 py-1 rounded-full text-sm font-medium">
+                        <span class="relative flex h-2 w-2">
+                            <span
+                                class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                            <span class="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+                        </span>
+                        Accepting Orders
+                    </div>
+                </div>
+
+                <!-- Maps Embed Dummy -->
+                <div>
+                    <h4 class="font-serif text-xl font-bold mb-6">Location</h4>
+                    <div class="w-full h-40 bg-dark-800 rounded-xl overflow-hidden relative group">
+                        <!-- Simulate Map Image -->
+                        <img src="https://images.unsplash.com/photo-1524661135-423995f22d0b?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
+                            alt="Map"
+                            class="w-full h-full object-cover opacity-70 group-hover:opacity-100 transition-opacity">
+                        <div class="absolute inset-0 flex items-center justify-center">
+                            <div
+                                class="bg-dark-900/80 backdrop-blur px-4 py-2 rounded-lg border border-white/10 flex items-center gap-2 cursor-pointer hover:bg-brand-500 hover:border-brand-500 transition-all">
+                                <i class="ph-fill ph-map-trifold"></i> <span>View Map</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="border-t border-white/5 text-center mt-12 pt-8">
+                <p class="text-gray-500 text-sm">© 2026 The Street & Spicy Food Stalls. All rights reserved. <br
+                        class="md:hidden">Made with Lots of Love & Happiness.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Cart Overlay & Drawer -->
+    <div id="cart-overlay" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[60] hidden opacity-0"></div>
+
+    <aside id="cart-drawer"
+        class="fixed top-0 right-0 h-full w-full sm:w-[400px] bg-dark-900 shadow-2xl z-[70] transform translate-x-full flex flex-col border-l border-white/5">
+        <!-- Cart Header -->
+        <div class="p-6 border-b border-white/5 flex items-center justify-between bg-dark-800/50">
+            <h2 class="font-serif text-2xl font-bold flex items-center gap-3">
+                <i class="ph-fill ph-shopping-bag text-brand-500"></i>
+                Your Order
+            </h2>
+            <button id="close-cart-btn"
+                class="p-2 bg-dark-800 hover:bg-red-500 hover:text-white rounded-full transition-colors text-gray-400">
+                <i class="ph ph-x"></i>
+            </button>
+        </div>
+
+        <!-- Cart Items List -->
+        <div id="cart-items" class="flex-1 overflow-y-auto p-6 space-y-4">
+            <!-- Empty Cart State -->
+            <div id="empty-cart-msg" class="flex flex-col items-center justify-center h-full text-center text-gray-500">
+                <i class="ph ph-shopping-cart text-6xl text-gray-700 mb-4"></i>
+                <p class="text-xl font-serif text-gray-300 mb-2">Your cart is empty</p>
+                <p class="text-sm">Good food is always cooking! Go ahead, order some yummy items from the menu.</p>
+                <button
+                    onclick="document.getElementById('close-cart-btn').click(); document.getElementById('menu-section').scrollIntoView();"
+                    class="mt-6 font-bold text-brand-500 hover:text-brand-400">Browse Menu</button>
+            </div>
+
+            <!-- Items will be injected here via JS -->
+        </div>
+
+        <!-- Cart Footer / Summary -->
+        <div id="cart-footer" class="p-6 bg-dark-800 border-t border-white/5 hidden">
+            <div class="space-y-3 mb-6 text-sm">
+                <div class="flex justify-between text-gray-300">
+                    <span>Subtotal</span>
+                    <span id="cart-subtotal" class="font-medium">₹0</span>
+                </div>
+                <div class="flex justify-between text-gray-300">
+                    <span>Taxes & Charges</span>
+                    <span id="cart-taxes" class="font-medium">₹25</span>
+                </div>
+                <div class="flex justify-between text-brand-500 font-medium">
+                    <span>Delivery Fee</span>
+                    <span>Free</span>
+                </div>
+                <div class="border-t border-white/10 pt-3 flex justify-between text-lg font-bold">
+                    <span>Total To Pay</span>
+                    <span id="cart-total">₹0</span>
+                </div>
+            </div>
+
+            <button
+                class="w-full py-4 bg-gradient-to-r from-brand-500 to-brand-orange text-white rounded-xl font-bold text-lg shadow-lg hover:shadow-brand-500/30 transition-shadow">
+                Proceed to Payment <i class="ph-bold ph-arrow-right ml-2 inline-block align-middle"></i>
+            </button>
+        </div>
+    </aside>
+
+    <!-- Notification Toast -->
+    <div id="toast"
+        class="fixed bottom-6 left-1/2 transform -translate-x-1/2 bg-green-500 text-white px-6 py-3 rounded-full shadow-lg z-[80] font-medium transition-all duration-300 translate-y-20 opacity-0 flex items-center gap-2">
+        <i class="ph-fill ph-check-circle text-xl"></i>
+        <span id="toast-msg">Item added to cart</span>
+    </div>
+
+    <!-- Application Script -->
+    <script src="js/data.js"></script>
+    <script src="js/app.js"></script>
+</body>
+
+</html>
