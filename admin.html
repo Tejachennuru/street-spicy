@@ -27,26 +27,36 @@
 <body
     class="bg-dark-900 text-white font-sans antialiased selection:bg-brand-500 selection:text-white flex h-screen overflow-hidden">
 
+    <!-- Mobile Sidebar Overlay -->
+    <div id="sidebar-overlay"
+        class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[40] hidden opacity-0 transition-opacity duration-300 md:hidden"
+        onclick="toggleSidebar()"></div>
+
     <!-- Sidebar -->
-    <aside class="w-64 bg-dark-950 border-r border-white/5 flex flex-col hidden md:flex">
-        <div class="p-6 border-b border-white/5 flex items-center gap-2">
-            <i class="ph-fill ph-fire text-2xl text-brand-500"></i>
-            <span class="font-serif font-bold text-lg tracking-tight">Admin Panel</span>
+    <aside id="admin-sidebar"
+        class="w-64 bg-dark-950 border-r border-white/5 flex flex-col fixed inset-y-0 left-0 z-[50] transform -translate-x-full md:relative md:translate-x-0 transition-transform duration-300">
+        <div class="p-6 border-b border-white/5 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <i class="ph-fill ph-fire text-2xl text-brand-500"></i>
+                <span class="font-serif font-bold text-lg tracking-tight">Admin Panel</span>
+            </div>
+            <button class="md:hidden text-gray-400 hover:text-white" onclick="toggleSidebar()"><i
+                    class="ph ph-x text-xl"></i></button>
         </div>
         <nav class="flex-1 p-4 space-y-2">
-            <button onclick="switchTab('dashboard')" id="tab-dashboard"
+            <button onclick="switchTab('dashboard'); if(window.innerWidth < 768) toggleSidebar();" id="tab-dashboard"
                 class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left font-medium transition-colors bg-brand-500/10 text-brand-500 admin-tab">
                 <i class="ph ph-squares-four text-xl"></i> Dashboard
             </button>
-            <button onclick="switchTab('foods')" id="tab-foods"
+            <button onclick="switchTab('foods'); if(window.innerWidth < 768) toggleSidebar();" id="tab-foods"
                 class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left font-medium text-gray-400 hover:bg-dark-800 transition-colors admin-tab">
                 <i class="ph ph-hamburger text-xl"></i> Menu & Stock
             </button>
-            <button onclick="switchTab('kaatha')" id="tab-kaatha"
+            <button onclick="switchTab('kaatha'); if(window.innerWidth < 768) toggleSidebar();" id="tab-kaatha"
                 class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left font-medium text-gray-400 hover:bg-dark-800 transition-colors admin-tab">
                 <i class="ph ph-notebook text-xl"></i> Kaatha (Credit)
             </button>
-            <button onclick="switchTab('orders')" id="tab-orders"
+            <button onclick="switchTab('orders'); if(window.innerWidth < 768) toggleSidebar();" id="tab-orders"
                 class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left font-medium text-gray-400 hover:bg-dark-800 transition-colors admin-tab">
                 <i class="ph ph-receipt text-xl"></i> Orders History
             </button>
@@ -65,9 +75,10 @@
             class="bg-dark-950/50 backdrop-blur-md border-b border-white/5 p-4 md:p-6 sticky top-0 z-10 flex justify-between items-center">
             <h1 class="text-2xl font-serif font-bold" id="page-title">Dashboard Overview</h1>
             <div class="flex items-center gap-4">
-                <button class="md:hidden p-2 text-gray-400"
-                    onclick="alert('Sidebar toggle functionality would go here')"><i
-                        class="ph ph-list text-2xl"></i></button>
+                <button class="md:hidden p-2 text-gray-400 hover:text-white transition-colors"
+                    onclick="toggleSidebar()">
+                    <i class="ph ph-list text-2xl"></i>
+                </button>
                 <div class="flex items-center gap-2">
                     <div
                         class="w-8 h-8 rounded-full bg-brand-500 text-white flex items-center justify-center font-bold">
