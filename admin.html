@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - The Street & Spicy</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: { 50: '#fef2f2', 100: '#fee2e2', 500: '#ef4444', 600: '#dc2626', 800: '#991b1b', 900: '#7f1d1d', yellow: '#facc15', orange: '#f97316' },
+                        dark: { 800: '#1f2937', 900: '#111827', 950: '#030712' }
+                    },
+                    fontFamily: { sans: ['Outfit', 'sans-serif'], serif: ['Playfair Display', 'serif'] }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="css/styles.css">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+
+<body
+    class="bg-dark-900 text-white font-sans antialiased selection:bg-brand-500 selection:text-white flex h-screen overflow-hidden">
+
+    <!-- Sidebar -->
+    <aside class="w-64 bg-dark-950 border-r border-white/5 flex flex-col hidden md:flex">
+        <div class="p-6 border-b border-white/5 flex items-center gap-2">
+            <i class="ph-fill ph-fire text-2xl text-brand-500"></i>
+            <span class="font-serif font-bold text-lg tracking-tight">Admin Panel</span>
+        </div>
+        <nav class="flex-1 p-4 space-y-2">
+            <button onclick="switchTab('dashboard')" id="tab-dashboard"
+                class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left font-medium transition-colors bg-brand-500/10 text-brand-500 admin-tab">
+                <i class="ph ph-squares-four text-xl"></i> Dashboard
+            </button>
+            <button onclick="switchTab('foods')" id="tab-foods"
+                class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left font-medium text-gray-400 hover:bg-dark-800 transition-colors admin-tab">
+                <i class="ph ph-hamburger text-xl"></i> Menu & Stock
+            </button>
+            <button onclick="switchTab('kaatha')" id="tab-kaatha"
+                class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left font-medium text-gray-400 hover:bg-dark-800 transition-colors admin-tab">
+                <i class="ph ph-notebook text-xl"></i> Kaatha (Credit)
+            </button>
+            <button onclick="switchTab('orders')" id="tab-orders"
+                class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left font-medium text-gray-400 hover:bg-dark-800 transition-colors admin-tab">
+                <i class="ph ph-receipt text-xl"></i> Orders History
+            </button>
+        </nav>
+        <div class="p-4 border-t border-white/5">
+            <a href="index.html" class="flex items-center gap-2 text-gray-400 hover:text-white transition-colors">
+                <i class="ph ph-arrow-left"></i> Back to Site
+            </a>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 flex flex-col h-screen overflow-y-auto">
+        <!-- Header -->
+        <header
+            class="bg-dark-950/50 backdrop-blur-md border-b border-white/5 p-4 md:p-6 sticky top-0 z-10 flex justify-between items-center">
+            <h1 class="text-2xl font-serif font-bold" id="page-title">Dashboard Overview</h1>
+            <div class="flex items-center gap-4">
+                <button class="md:hidden p-2 text-gray-400"
+                    onclick="alert('Sidebar toggle functionality would go here')"><i
+                        class="ph ph-list text-2xl"></i></button>
+                <div class="flex items-center gap-2">
+                    <div
+                        class="w-8 h-8 rounded-full bg-brand-500 text-white flex items-center justify-center font-bold">
+                        A</div>
+                    <span class="text-sm font-medium hidden md:block">Owner Admin</span>
+                </div>
+            </div>
+        </header>
+
+        <div class="p-4 md:p-8">
+
+            <!-- Dashboard Tab -->
+            <div id="view-dashboard" class="tab-content block space-y-8">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="bg-dark-800 p-6 rounded-2xl border border-white/5">
+                        <div class="text-gray-400 mb-2 flex items-center justify-between">
+                            Total Kaatha Receivables <i class="ph ph-coins text-brand-orange text-xl"></i>
+                        </div>
+                        <div class="text-3xl font-bold font-serif" id="stat-receivables">₹0</div>
+                    </div>
+                    <div class="bg-dark-800 p-6 rounded-2xl border border-white/5">
+                        <div class="text-gray-400 mb-2 flex items-center justify-between">
+                            Active Menu Items <i class="ph ph-hamburger text-brand-500 text-xl"></i>
+                        </div>
+                        <div class="text-3xl font-bold font-serif" id="stat-active-items">0</div>
+                    </div>
+                    <div class="bg-dark-800 p-6 rounded-2xl border border-white/5">
+                        <div class="text-gray-400 mb-2 flex items-center justify-between">
+                            Pending Kaatha Approvals <i class="ph ph-users text-blue-500 text-xl"></i>
+                        </div>
+                        <div class="text-3xl font-bold font-serif" id="stat-pending-kaatha">0</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Foods Tab -->
+            <div id="view-foods" class="tab-content hidden space-y-6">
+                <div class="flex justify-between items-center bg-dark-800 p-4 rounded-xl border border-white/5">
+                    <h2 class="text-xl font-bold">Menu Management</h2>
+                    <button onclick="document.getElementById('add-food-modal').classList.remove('hidden')"
+                        class="px-4 py-2 bg-brand-500 hover:bg-brand-600 rounded-lg font-medium flex items-center gap-2">
+                        <i class="ph ph-plus"></i> Add Item
+                    </button>
+                </div>
+                <div class="bg-dark-800 rounded-2xl border border-white/5 overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-dark-900/50 text-gray-400 text-sm">
+                                    <th class="p-4 font-medium">Image</th>
+                                    <th class="p-4 font-medium">Name & Category</th>
+                                    <th class="p-4 font-medium">Price</th>
+                                    <th class="p-4 font-medium">Stock Status</th>
+                                    <th class="p-4 font-medium">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="admin-foods-tbody" class="divide-y divide-white/5 text-sm">
+                                <!-- Rendered via JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Kaatha Tab -->
+            <div id="view-kaatha" class="tab-content hidden space-y-6">
+                <div class="bg-dark-800 rounded-2xl border border-white/5 p-6 mb-6">
+                    <h2 class="text-xl font-bold mb-2">Customer Credit Management</h2>
+                    <p class="text-gray-400 text-sm">Manage user credits and approve Aadhar verifications here.</p>
+                </div>
+                <div class="bg-dark-800 rounded-2xl border border-white/5 overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-dark-900/50 text-gray-400 text-sm">
+                                    <th class="p-4 font-medium">User</th>
+                                    <th class="p-4 font-medium">Aadhar Image</th>
+                                    <th class="p-4 font-medium">Balance (To Receive)</th>
+                                    <th class="p-4 font-medium">Status / Limit</th>
+                                    <th class="p-4 font-medium">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="admin-kaatha-tbody" class="divide-y divide-white/5 text-sm">
+                                <!-- Rendered via JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Orders Tab -->
+            <div id="view-orders" class="tab-content hidden space-y-6">
+                <div
+                    class="flex flex-col md:flex-row justify-between items-start md:items-center bg-dark-800 p-4 rounded-xl border border-white/5 gap-4">
+                    <h2 class="text-xl font-bold">Orders Timeline</h2>
+                    <div class="flex gap-2">
+                        <select id="order-filter"
+                            class="bg-dark-900 border border-white/10 text-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-brand-500">
+                            <option value="all">All Time</option>
+                            <option value="month">This Month</option>
+                            <option value="week">This Week</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="bg-dark-800 rounded-2xl border border-white/5 p-6">
+                    <div class="text-lg font-bold mb-4 font-serif">Order History</div>
+                    <div class="space-y-4" id="admin-orders-list">
+                        <!-- Rendered via JS -->
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Modals -->
+    <div id="add-food-modal"
+        class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex justify-center items-center">
+        <div
+            class="bg-dark-800 border border-white/10 w-full max-w-md rounded-2xl p-6 shadow-2xl transform transition-all relative">
+            <button onclick="document.getElementById('add-food-modal').classList.add('hidden')"
+                class="absolute top-4 right-4 text-gray-400 hover:text-white"><i class="ph ph-x text-xl"></i></button>
+            <h3 class="text-2xl font-serif font-bold mb-6">Add New Dish</h3>
+            <form id="add-food-form" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-400 mb-1">Dish Name</label>
+                    <input type="text" id="add-name" required
+                        class="w-full bg-dark-900 border border-white/10 rounded-lg px-4 py-2 focus:ring-1 focus:ring-brand-500 focus:border-brand-500 outline-none">
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-400 mb-1">Price (₹)</label>
+                        <input type="number" id="add-price" required
+                            class="w-full bg-dark-900 border border-white/10 rounded-lg px-4 py-2 focus:ring-1 focus:ring-brand-500 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-400 mb-1">Type</label>
+                        <select id="add-type"
+                            class="w-full bg-dark-900 border border-white/10 rounded-lg px-4 py-2 focus:ring-1 focus:ring-brand-500 outline-none">
+                            <option value="veg">Veg</option>
+                            <option value="nonveg">Non-Veg</option>
+                        </select>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-400 mb-1">Category</label>
+                    <input type="text" id="add-category" placeholder="E.g. starters, biryani" required
+                        class="w-full bg-dark-900 border border-white/10 rounded-lg px-4 py-2 focus:ring-1 focus:ring-brand-500 outline-none">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-400 mb-1">Image URL</label>
+                    <input type="url" id="add-image" required
+                        class="w-full bg-dark-900 border border-white/10 rounded-lg px-4 py-2 focus:ring-1 focus:ring-brand-500 outline-none">
+                </div>
+                <div class="pt-4 border-t border-white/10">
+                    <button type="submit"
+                        class="w-full bg-brand-500 hover:bg-brand-600 text-white font-bold py-3 rounded-lg transition-colors">Save
+                        Dish</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/supabase-config.js"></script>
+    <script src="js/db.js"></script>
+    <script src="js/admin.js"></script>
+</body>
+
+</html>

@@ -75,31 +75,46 @@
                 </div>
 
                 <!-- Cart Button & Mobile Menu Toggle -->
-                <div class="flex items-center gap-4">
-                    <button id="cart-btn" class="relative p-2 rounded-full hover:bg-dark-800 transition-colors group">
-                        <i class="ph ph-shopping-cart text-2xl group-hover:text-brand-500 transition-colors"></i>
-                        <span id="cart-badge"
-                            class="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white transform translate-x-1/4 -translate-y-1/4 bg-brand-500 rounded-full scale-0 transition-transform duration-300">0</span>
-                    </button>
-                    <!-- Mobile Search Toggle -->
-                    <button id="mobile-search-btn"
-                        class="md:hidden p-2 rounded-full hover:bg-dark-800 transition-colors">
-                        <i class="ph ph-magnifying-glass text-2xl"></i>
+                <!-- Login / Profile Button -->
+                <button id="login-btn"
+                    class="hidden md:flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 hover:bg-brand-500 hover:border-brand-500 rounded-full transition-all text-sm font-bold">
+                    <i class="ph ph-user"></i> <span>Login</span>
+                </button>
+                <!-- User Menu Dropdown (Hidden initially) -->
+                <div id="user-menu" class="relative hidden">
+                    <button id="user-menu-btn"
+                        class="flex items-center gap-2 px-4 py-2 bg-brand-500/20 text-brand-500 border border-brand-500/30 rounded-full transition-all text-sm font-bold">
+                        <i class="ph-fill ph-user-circle text-lg"></i> <span id="user-name-display">User</span>
                     </button>
                 </div>
-            </div>
 
-            <!-- Mobile Search Bar (Hidden by default) -->
-            <div id="mobile-search-container" class="hidden md:hidden mt-3 pb-2 fade-in">
-                <div class="relative">
-                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <i class="ph ph-magnifying-glass text-gray-400"></i>
-                    </div>
-                    <input type="text" id="mobile-search"
-                        class="block w-full pl-10 pr-3 py-3 border border-gray-700 rounded-lg leading-5 bg-dark-800 text-gray-300 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-brand-500 focus:border-brand-500 sm:text-sm"
-                        placeholder="Search dishes...">
-                </div>
+                <button id="cart-btn" class="relative p-2 rounded-full hover:bg-dark-800 transition-colors group">
+                    <i class="ph ph-shopping-cart text-2xl group-hover:text-brand-500 transition-colors"></i>
+                    <span id="cart-badge"
+                        class="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white transform translate-x-1/4 -translate-y-1/4 bg-brand-500 rounded-full scale-0 transition-transform duration-300">0</span>
+                </button>
+                <!-- Mobile Search & Login Toggle -->
+                <button id="mobile-login-btn"
+                    class="md:hidden p-2 rounded-full hover:bg-dark-800 transition-colors text-brand-500">
+                    <i class="ph ph-user text-2xl"></i>
+                </button>
+                <button id="mobile-search-btn" class="md:hidden p-2 rounded-full hover:bg-dark-800 transition-colors">
+                    <i class="ph ph-magnifying-glass text-2xl"></i>
+                </button>
             </div>
+        </div>
+
+        <!-- Mobile Search Bar (Hidden by default) -->
+        <div id="mobile-search-container" class="hidden md:hidden mt-3 pb-2 fade-in">
+            <div class="relative">
+                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <i class="ph ph-magnifying-glass text-gray-400"></i>
+                </div>
+                <input type="text" id="mobile-search"
+                    class="block w-full pl-10 pr-3 py-3 border border-gray-700 rounded-lg leading-5 bg-dark-800 text-gray-300 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-brand-500 focus:border-brand-500 sm:text-sm"
+                    placeholder="Search dishes...">
+            </div>
+        </div>
         </div>
     </nav>
 
@@ -430,9 +445,9 @@
                 </div>
             </div>
 
-            <button
+            <button onclick="window.placeOrder()"
                 class="w-full py-4 bg-gradient-to-r from-brand-500 to-brand-orange text-white rounded-xl font-bold text-lg shadow-lg hover:shadow-brand-500/30 transition-shadow">
-                Proceed to Payment <i class="ph-bold ph-arrow-right ml-2 inline-block align-middle"></i>
+                Checkout securely <i class="ph-bold ph-arrow-right ml-2 inline-block align-middle"></i>
             </button>
         </div>
     </aside>
@@ -444,8 +459,91 @@
         <span id="toast-msg">Item added to cart</span>
     </div>
 
+    <!-- User Auth & Kaatha Modal -->
+    <div id="auth-modal"
+        class="fixed inset-0 bg-black/80 backdrop-blur-sm z-[100] hidden flex justify-center items-center opacity-0 transition-opacity duration-300">
+        <div
+            class="bg-dark-800 border border-white/10 w-full max-w-md rounded-2xl p-6 shadow-2xl transform transition-transform duration-300 scale-95 relative mx-4">
+            <button id="close-auth-btn" class="absolute top-4 right-4 text-gray-400 hover:text-white"><i
+                    class="ph ph-x text-xl"></i></button>
+            <h3 class="text-2xl font-serif font-bold mb-2">Login or Sign Up</h3>
+            <p class="text-gray-400 text-sm mb-6">Enter your details to manage orders and apply for Kaatha (Credit).</p>
+
+            <form id="auth-form" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-400 mb-1">Mobile Number</label>
+                    <input type="tel" id="auth-phone" required pattern="[0-9]{10}" placeholder="10-digit mobile number"
+                        class="w-full bg-dark-900 border border-white/10 rounded-lg px-4 py-3 focus:ring-1 focus:ring-brand-500 focus:border-brand-500 outline-none">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-400 mb-1">Full Name</label>
+                    <input type="text" id="auth-name" required placeholder="John Doe"
+                        class="w-full bg-dark-900 border border-white/10 rounded-lg px-4 py-3 focus:ring-1 focus:ring-brand-500 focus:border-brand-500 outline-none">
+                </div>
+
+                <div class="mt-4 pt-4 border-t border-white/10">
+                    <label class="flex items-center gap-2 cursor-pointer mb-3">
+                        <input type="checkbox" id="auth-kaatha"
+                            class="w-4 h-4 text-brand-500 bg-dark-900 border-white/20 rounded focus:ring-brand-500 focus:ring-2">
+                        <span class="text-sm font-medium">Apply for Kaatha (Credit)</span>
+                    </label>
+
+                    <div id="aadhar-upload-container" class="hidden space-y-2">
+                        <label class="block text-sm font-medium text-brand-orange">Aadhar Photo (Required for
+                            Kaatha)</label>
+                        <input type="file" id="auth-aadhar" accept="image/*"
+                            class="w-full text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-brand-500/10 file:text-brand-500 hover:file:bg-brand-500/20">
+                    </div>
+                </div>
+
+                <div class="pt-4 border-t border-white/10">
+                    <button type="submit"
+                        class="w-full bg-brand-500 hover:bg-brand-600 text-white font-bold py-3 rounded-xl transition-colors shadow-lg shadow-brand-500/20">Continue
+                        / Login</button>
+                </div>
+            </form>
+
+            <!-- Profile View (Hidden initially) -->
+            <div id="profile-view" class="hidden space-y-6">
+                <div class="flex items-center gap-4 bg-dark-900 p-4 rounded-xl border border-white/5">
+                    <div class="w-12 h-12 bg-brand-500 rounded-full flex items-center justify-center font-bold text-xl"
+                        id="profile-initials">U</div>
+                    <div>
+                        <div class="font-bold text-lg" id="profile-name">User Name</div>
+                        <div class="text-gray-400 text-sm" id="profile-phone">9999999999</div>
+                    </div>
+                </div>
+
+                <div class="bg-dark-900 p-4 rounded-xl border border-white/5 relative overflow-hidden">
+                    <div
+                        class="absolute right-0 top-0 w-24 h-24 bg-brand-500/10 rounded-full filter blur-xl -translate-y-1/2 translate-x-1/2">
+                    </div>
+                    <div class="font-bold text-gray-400 text-sm mb-1 flex items-center gap-2"><i
+                            class="ph-fill ph-notebook text-brand-500"></i> Kaatha Status</div>
+                    <div id="profile-kaatha-status" class="text-xl font-serif font-bold mb-4">Pending</div>
+
+                    <div class="flex justify-between items-end border-t border-white/5 pt-3">
+                        <div>
+                            <div class="text-gray-500 text-xs">Amount Due</div>
+                            <div id="profile-kaatha-balance" class="font-bold text-brand-orange text-lg">₹0</div>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-gray-500 text-xs text-right">Credit Limit</div>
+                            <div id="profile-kaatha-limit" class="font-bold text-gray-300">₹0</div>
+                        </div>
+                    </div>
+                </div>
+
+                <button id="logout-btn"
+                    class="w-full py-3 border border-red-500/30 text-red-500 hover:bg-red-500/10 rounded-xl font-bold transition-colors">Logout</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Application Script -->
-    <script src="js/data.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase-config.js"></script>
+    <script src="js/db.js"></script>
     <script src="js/app.js"></script>
 </body>
 

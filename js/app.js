@@ -1,13 +1,14 @@
 document.addEventListener('DOMContentLoaded', () => {
     // State
     const state = {
-        menuItems: window.appFoodData || [],
+        menuItems: [],
         cart: [],
         filter: {
             search: '',
             category: 'all',
             vegOnly: false
-        }
+        },
+        user: null
     };
 
     // DOM Elements
@@ -45,10 +46,40 @@ document.addEventListener('DOMContentLoaded', () => {
     const toast = document.getElementById('toast');
     const toastMsg = document.getElementById('toast-msg');
 
+    // Auth & User Elements
+    const loginBtn = document.getElementById('login-btn');
+    const mobileLoginBtn = document.getElementById('mobile-login-btn');
+    const userMenu = document.getElementById('user-menu');
+    const userNameDisplay = document.getElementById('user-name-display');
+    const authModal = document.getElementById('auth-modal');
+    const closeAuthBtn = document.getElementById('close-auth-btn');
+    const authForm = document.getElementById('auth-form');
+    const authKaatha = document.getElementById('auth-kaatha');
+    const aadharUploadContainer = document.getElementById('aadhar-upload-container');
+
+    // Profile Elements
+    const profileView = document.getElementById('profile-view');
+    const authTitle = document.getElementById('auth-title');
+    const authSubtitle = document.getElementById('auth-subtitle');
+    const profileInitials = document.getElementById('profile-initials');
+    const profileName = document.getElementById('profile-name');
+    const profilePhone = document.getElementById('profile-phone');
+    const profileKaathaStatus = document.getElementById('profile-kaatha-status');
+    const profileKaathaBalance = document.getElementById('profile-kaatha-balance');
+    const profileKaathaLimit = document.getElementById('profile-kaatha-limit');
+    const logoutBtn = document.getElementById('logout-btn');
+
     const categories = ['All', 'Starters', 'Street Food', 'Chinese', 'Biryani', 'Burgers', 'Rolls', 'Pizza', 'Desserts', 'Drinks'];
 
     // Initialize App
-    function init() {
+    async function init() {
+        try {
+            state.menuItems = await window.db.getFoodItems();
+        } catch (e) {
+            console.error("Failed to fetch menu:", e);
+        }
+
+        checkAuthStorage();
         renderCategories();
         renderMenu();
         setupEventListeners();
@@ -245,6 +276,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
             cartSubtotal.textContent = `₹${subtotal}`;
             cartTotal.textContent = `₹${subtotal + taxes}`;
+
+            // Allow placing order
+            state.cartTotalAmount = subtotal + taxes;
         }
 
         // Save to local storage
@@ -293,6 +327,147 @@ document.addEventListener('DOMContentLoaded', () => {
             toast.classList.add('translate-y-20', 'opacity-0');
         }, 3000);
     }
+
+    // --- AUTH LOGIC --- //
+    function openAuthModal() {
+        if (state.user) {
+            // Show Profile
+            authTitle.textContent = "Your Profile";
+            authSubtitle.textContent = "Manage your account and Kaatha details.";
+            authForm.classList.add('hidden');
+            profileView.classList.remove('hidden');
+
+            profileInitials.textContent = state.user.name.charAt(0).toUpperCase();
+            profileName.textContent = state.user.name;
+            profilePhone.textContent = state.user.phone_number;
+
+            const ks = state.user.kaatha_status || 'Not Applied';
+            profileKaathaStatus.textContent = ks.charAt(0).toUpperCase() + ks.slice(1);
+
+            if (ks === 'approved') {
+                profileKaathaStatus.className = "text-xl font-serif font-bold mb-4 text-green-500";
+            } else if (ks === 'pending') {
+                profileKaathaStatus.className = "text-xl font-serif font-bold mb-4 text-brand-yellow";
+            } else {
+                profileKaathaStatus.className = "text-xl font-serif font-bold mb-4 text-gray-500";
+            }
+
+            profileKaathaBalance.textContent = `₹${state.user.balance || 0}`;
+            profileKaathaLimit.textContent = `₹${state.user.credit_limit || 0}`;
+
+        } else {
+            // Show Login Form
+            authTitle.textContent = "Login or Sign Up";
+            authSubtitle.textContent = "Enter your details to manage orders and apply for Kaatha (Credit).";
+            authForm.classList.remove('hidden');
+            profileView.classList.add('hidden');
+        }
+
+        authModal.classList.remove('hidden');
+        setTimeout(() => {
+            authModal.classList.remove('opacity-0');
+            authModal.querySelector('div').classList.remove('scale-95');
+            authModal.querySelector('div').classList.add('scale-100');
+        }, 10);
+    }
+
+    function closeAuthModal() {
+        authModal.classList.add('opacity-0');
+        authModal.querySelector('div').classList.remove('scale-100');
+        authModal.querySelector('div').classList.add('scale-95');
+        setTimeout(() => {
+            authModal.classList.add('hidden');
+        }, 300);
+    }
+
+    function checkAuthStorage() {
+        const savedUser = localStorage.getItem('streetSpicyUser');
+        if (savedUser) {
+            try {
+                state.user = JSON.parse(savedUser);
+                updateAuthUI();
+            } catch (e) {
+                console.error("Could not parse user from storage");
+            }
+        }
+    }
+
+    function updateAuthUI() {
+        if (state.user) {
+            loginBtn.classList.add('hidden');
+            mobileLoginBtn.classList.add('hidden');
+            userMenu.classList.remove('hidden');
+            userMenu.classList.add('md:block');
+            userNameDisplay.textContent = state.user.name.split(' ')[0];
+        } else {
+            loginBtn.classList.remove('hidden');
+            mobileLoginBtn.classList.remove('hidden');
+            userMenu.classList.add('hidden');
+            userMenu.classList.remove('md:block');
+        }
+    }
+
+    // --- CHECKOUT LOGIC --- //
+    window.placeOrder = async function () {
+
+        /*
+        if (!state.user) {
+            showToast("Please login first to place an order.");
+            openAuthModal();
+            return;
+        }
+            */
+        // TEMPORARY BYPASS LOGIN
+        let userId = null;
+        let paymentMethod = 'online';
+
+        if (state.user) {
+            userId = state.user.id;
+            // Kaatha payment check
+            if (state.user.kaatha_status === 'approved') {
+                const useKaatha = confirm(`You have an approved Kaatha. Your current balance is ₹${state.user.balance} and limit is ₹${state.user.credit_limit}. Do you want to pay using Kaatha?`);
+                if (useKaatha) {
+                    if ((state.user.balance + state.cartTotalAmount) > state.user.credit_limit) {
+                        alert('Order exceeds your Kaatha credit limit! Try a smaller order or clear your dues.');
+                        return;
+                    }
+                    paymentMethod = 'kaatha';
+                }
+            } else if (state.user.kaatha_status === 'pending') {
+                alert('Your Kaatha approval is still pending. We will proceed with normal checkout.');
+            }
+        } else {
+            // Default to temporary user if no login
+            userId = 'u_guest_' + Date.now();
+        }
+
+        try {
+            const order = {
+                user_id: userId,
+                total_amount: state.cartTotalAmount,
+                payment_method: paymentMethod,
+                items: state.cart.map(item => ({ id: item.id, name: item.name, qty: item.quantity, price: item.price }))
+            };
+
+            await window.db.createOrder(order);
+
+            // If Kaatha, update local user state
+            if (paymentMethod === 'kaatha') {
+                state.user.balance += state.cartTotalAmount;
+                localStorage.setItem('streetSpicyUser', JSON.stringify(state.user));
+            }
+
+            state.cart = [];
+            updateCartUI();
+            toggleCart();
+
+            alert(`🎉 Order placed successfully! (Paid via ${paymentMethod})`);
+
+        } catch (e) {
+            console.error(e);
+            alert("Failed to place order. Try again.");
+        }
+    };
 
     // --- EVENT LISTENERS --- //
 
@@ -361,6 +536,79 @@ document.addEventListener('DOMContentLoaded', () => {
         cartBtn.addEventListener('click', toggleCart);
         closeCartBtn.addEventListener('click', toggleCart);
         cartOverlay.addEventListener('click', toggleCart);
+
+        // Auth listeners
+        loginBtn.addEventListener('click', openAuthModal);
+        mobileLoginBtn.addEventListener('click', openAuthModal);
+
+        // Let the user menu open the profile
+        const userMenuBtn = document.getElementById('user-menu-btn');
+        if (userMenuBtn) {
+            userMenuBtn.addEventListener('click', openAuthModal);
+        }
+
+        closeAuthBtn.addEventListener('click', closeAuthModal);
+
+        logoutBtn.addEventListener('click', () => {
+            state.user = null;
+            localStorage.removeItem('streetSpicyUser');
+            updateAuthUI();
+            closeAuthModal();
+            showToast("Logged out successfully.");
+        });
+
+        authKaatha.addEventListener('change', (e) => {
+            if (e.target.checked) {
+                aadharUploadContainer.classList.remove('hidden');
+                document.getElementById('auth-aadhar').required = true;
+            } else {
+                aadharUploadContainer.classList.add('hidden');
+                document.getElementById('auth-aadhar').required = false;
+            }
+        });
+
+        authForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const phone = document.getElementById('auth-phone').value;
+            const name = document.getElementById('auth-name').value;
+            const applyKaatha = authKaatha.checked;
+
+            try {
+                let user = await window.db.getUserByPhone(phone);
+
+                if (!user) {
+                    // Create new user
+                    // In a real app, upload the aadhar to Supabase storage and get URL
+                    // Here we fake it
+                    let aadharUrl = applyKaatha ? 'https://dummyimage.com/600x400/000/fff&text=Dummy+Aadhar' : null;
+
+                    user = await window.db.createUser({
+                        phone_number: phone,
+                        name: name,
+                        aadhar_url: aadharUrl,
+                        kaatha_status: applyKaatha ? 'pending' : null
+                    });
+                } else {
+                    // Updating existing user if they apply for Kaatha now
+                    if (applyKaatha && !user.kaatha_status) {
+                        user = await window.db.updateUser(user.id, {
+                            kaatha_status: 'pending',
+                            aadhar_url: 'https://dummyimage.com/600x400/000/fff&text=Dummy+Aadhar'
+                        });
+                    }
+                }
+
+                state.user = user;
+                localStorage.setItem('streetSpicyUser', JSON.stringify(user));
+                updateAuthUI();
+                closeAuthModal();
+                showToast(`Welcome, ${name.split(' ')[0]}!`);
+
+            } catch (err) {
+                console.error(err);
+                alert("Authentication failed.");
+            }
+        });
 
         // Navbar scroll styling
         window.addEventListener('scroll', () => {
